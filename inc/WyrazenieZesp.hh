@@ -31,5 +31,6 @@ struct WyrazenieZesp {
 
 void Wyswietl(WyrazenieZesp  WyrZ);
 LZespolona Oblicz(WyrazenieZesp  WyrZ);
+void Wyswietl1(LZespolona Skl);
 
 #endif
