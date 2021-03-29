@@ -66,9 +66,10 @@ void Wyswietl(WyrazenieZesp  WyrZ)
     Wyswietl1(WyrZ.Arg2);
     std::cout << " = "; std::cout << std::endl;
 }
+
 /*
 * Przeciazenie operatora <<
-wyswietlenie liczby zespolonej
+wyswietlenie liczby zespolonej na terminalu
 * Argumenty:
 * Lz - liczba zespolona ktora ma byc wyswietlona
 * Zwraca:
@@ -80,7 +81,7 @@ std::ostream& operator << (std::ostream &StrmWy, const LZespolona &Lz)
 }
 /*
 * Przeciazenie operatora <<
-* Realizuje wyswietlenie wyrazenia liczb zespolonych
+* Realizuje wyswietlenie wyrazenia liczb zespolonych na terminalu
 * Argumenty:
 * WyrZ - wyrazenie liczb zespolonych ktore ma byc wyswietlone
 * TabSymOp - tablica znakow operatorow arytmetycznych sluzaca do ich wyswietlania
@@ -94,7 +95,7 @@ std::ostream& operator << (std::ostream &StrmWy, const WyrazenieZesp &WyrZ)
 }
 /*
 * Przeciazenie operatora >>
-* Realizuje wczytanie liczby zespolonej
+* Realizuje wczytanie liczby zespolonej z terminala
 * Argumenty:
 * Lz - zmienna do ktorej wczytywana jest liczba zespolona
 * Zwraca:
@@ -102,24 +103,22 @@ std::ostream& operator << (std::ostream &StrmWy, const WyrazenieZesp &WyrZ)
 */
 std::istream& operator >> (std::istream &StrmWe, LZespolona &Lz)
 {
-    char nawias, litera;
-
-        StrmWe >> nawias;
-        if(nawias != '(')
+    char nawiaslewy, litera, nawiasprawy;
+        StrmWe >> nawiaslewy;
+        if(nawiaslewy != '(')
             {StrmWe.setstate(std::_S_failbit);return StrmWe;}
         StrmWe >> Lz.re;
         if(StrmWe.fail())
-            {return StrmWe;}
+            { return StrmWe;}
         StrmWe >> Lz.im;
         if(StrmWe.fail())
             {return StrmWe;}
         StrmWe >> litera;
         if(litera != 'i')
             {StrmWe.setstate(std::_S_failbit);return StrmWe;}
-        StrmWe >> nawias;
-        if(nawias != ')')
+        StrmWe >> nawiasprawy;
+        if(nawiasprawy != ')')
             {StrmWe.setstate(std::_S_failbit);return StrmWe;}
-        
         return StrmWe;
         
 }

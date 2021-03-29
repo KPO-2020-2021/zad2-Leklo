@@ -30,7 +30,7 @@ struct WyrazenieZesp {
  */
 
 
-void wyswietlanie(LZespolona Lz);
+void Wyswietl1(LZespolona Lz);
 LZespolona Oblicz(WyrazenieZesp  WyrZ);
 void Wyswietl(WyrazenieZesp  WyrZ);
 std::ostream& operator << (std::ostream &StrmWy, const LZespolona &Lz);

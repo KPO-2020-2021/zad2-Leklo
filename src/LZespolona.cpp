@@ -2,8 +2,8 @@
 #include <cmath>
 #include <iostream>
 
-#define MIN_DIFF 0.00001
-
+#define MIN_DIFF 0.0001
+#define PI 3.14
 /*!
  * Realizuje porównanie dwoch liczb zespolonych.
  * Argumenty:
@@ -14,17 +14,17 @@
  */
 
 bool  operator == (LZespolona  Skl1,  LZespolona  Skl2){
-  if ((Skl1.re == Skl2.re) && (Skl1.im == Skl2.im))
+  /*if ((Skl1.re == Skl2.re) && (Skl1.im == Skl2.im))
     return true;
   else
-    return false;
+    return false;*/
   //alternatywnie, dla MIN_DIFF i wyników od użytkownika
-  /*
-  if abs(Skl1.re - Skl2.re) <= MIN_DIFF && abs(Skl1.im - Skl2.im) <= MIN_DIFF
-    return true;
+  
+  if (abs(Skl1.re - Skl2.re) <= MIN_DIFF && abs(Skl1.im - Skl2.im) <= MIN_DIFF)
+    {return true;}
   else
-    return false;
-  */
+    {return false;}
+  
 }
 
 /*!
@@ -45,7 +45,7 @@ LZespolona  operator + (LZespolona  Skl1,  LZespolona  Skl2){
 
 
 /*!
- * Realizuje dzielenie liczby zespolonej przez skakar.
+ * Realizuje dzielenie liczby zespolonej przez skalar.
  * Argumenty:
  *    Skl1 - dzielona liczba zespolona,
  *    Skl2 - skalar-dzielnik.
@@ -54,12 +54,9 @@ LZespolona  operator + (LZespolona  Skl1,  LZespolona  Skl2){
  */
 LZespolona  operator / (LZespolona  Skl1,  double  Skl2){
   LZespolona  Wynik;
-
   if(Skl2==0)
   {
-    std::cerr << "Niepoprawne dzialanie, dzielenie przez zero";
-    Wynik.re = Wynik.im = 0;
-    return Wynik;
+    throw std::runtime_error("Blad matematyczny: Nie mozna dzielic przez zero");
   }
   Wynik.re = Skl1.re / Skl2;
   Wynik.im = Skl1.im / Skl2;
@@ -104,10 +101,12 @@ LZespolona  operator * (LZespolona  Skl1,  LZespolona  Skl2)
  * Zwraca:
  *    Sprzezona liczbe zespolona.
  */
-double Sprzezenie (LZespolona Skl2)
-{
-  Skl2.im = (-1) * Skl2.im;
-  return Skl2.im;
+LZespolona Sprzezenie (LZespolona Skl2)
+{ 
+  if(Skl2.im == 0.0)
+  {return Skl2;}
+  Skl2.im = -Skl2.im;
+  return Skl2;
 }
 /*!
  * Realizuje podniesienie do kwadratu modulu liczby zespolonej.
@@ -116,7 +115,7 @@ double Sprzezenie (LZespolona Skl2)
  * Zwraca:
  *    Kwadrat modulu liczby zespolonej jako double
  */
-double Modul2 (LZespolona Skl2)
+double ModulKwadrat (LZespolona Skl2)
 {
   double m;
   m = Skl2.re * Skl2.re + Skl2.im * Skl2.im;
@@ -135,12 +134,60 @@ LZespolona  operator / (LZespolona  Skl1,  LZespolona  Skl2)
   LZespolona  Wynik;
   if(Skl2.re==0 && Skl2.im==0)
   {
-    std::cerr << "Niepoprawne dzialanie dzielenie przez zero";
-    Wynik.re=Wynik.im=0;
-    return Wynik;
+    throw std::runtime_error("Blad matematyczny: Nie mozna dzielic przez zero");
   }
-  Sprzezenie (Skl2);
-  Wynik.re = (Skl1.re * Skl2.re - Skl1.im * Sprzezenie(Skl2)) / Modul2(Skl2) ;
-  Wynik.im = (Skl1.re * Sprzezenie(Skl2) + Skl2.re * Skl1.im) / Modul2(Skl2) ;
+  Skl2 = Sprzezenie (Skl2);
+  Wynik.re = (Skl1.re * Skl2.re - Skl1.im * Skl2.im) / ModulKwadrat(Skl2) ;
+  Wynik.im = (Skl1.re * Skl2.im + Skl2.re * Skl1.im) / ModulKwadrat(Skl2) ;
+  return Wynik;
+}
+
+double Arg(LZespolona z)
+{
+  double alfa;
+  if(z.re > 0)
+  {
+    alfa = atan2(z.im, z.re);
+  }
+  if(z.re < 0)
+  {
+    alfa = atan2(z.im, z.re) + PI;
+  }
+  if(z.re == 0)
+  {
+    if(z.im > 0)
+    {
+      alfa = PI/2;
+    }
+    if(z.im < 0)
+    {
+      alfa = -1 * PI/2;
+    }
+    if(z.im == 0)
+    {
+      throw std::runtime_error("Nieokreslony Arugment");
+    }
+  }
+  return alfa;
+  std::cout << alfa;
+}
+LZespolona  operator /= (LZespolona  Skl1,  LZespolona  Skl2)
+{
+  LZespolona  Wynik;
+  if(Skl2.re==0 && Skl2.im==0)
+  {
+    throw std::runtime_error("Blad matematyczny: Nie mozna dzielic przez zero");
+  }
+  Skl2 = Sprzezenie (Skl2);
+  Wynik.re = (Skl1.re * Skl2.re - Skl1.im * Skl2.im) / ModulKwadrat(Skl2) ;
+  Wynik.im = (Skl1.re * Skl2.im + Skl2.re * Skl1.im) / ModulKwadrat(Skl2) ;
+  return Wynik;
+}
+LZespolona  operator += (LZespolona  Skl1,  LZespolona  Skl2)
+{
+  LZespolona  Wynik;
+
+  Wynik.re = Skl1.re + Skl2.re;
+  Wynik.im = Skl1.im + Skl2.im;
   return Wynik;
 }
